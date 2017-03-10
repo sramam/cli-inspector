@@ -1,6 +1,6 @@
 {
   "name": "cli-inspector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automate CLI testing with style",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -125,13 +125,5 @@
     "env": [
       "mocha"
     ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sramam/typescript-starter-node.git"
-  },
-  "bugs": {
-    "url": "https://github.com/sramam/typescript-starter-node/issues"
-  },
-  "homepage": "https://github.com/sramam/typescript-starter-node#readme"
+  }
 }
