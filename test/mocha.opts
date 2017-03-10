@@ -1,0 +1,8 @@
+--compiler ts:tsc
+--reporter spec
+--ui bdd
+--recursive
+--watch-extensions js
+--timeout 20000
+build/**/*test.js
+build/**/test/specs/**/*.js

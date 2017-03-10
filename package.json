@@ -1,0 +1,137 @@
+{
+  "name": "cli-inspector",
+  "version": "1.0.0",
+  "description": "Automate CLI testing with style",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "check-engines": "check-engines",
+    "staged-mods-ok": "git-mods --staged_ok",
+    "no-mods": "git-mods",
+    "clean": "rimraf build coverage",
+    "clean:dist": "rimraf dist",
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "compile:build": "tsc",
+    "compile:dist": "tsc --project tsconfig.dist.json",
+    "compile:watch": "tsc -w",
+    "sh": "npm-sh",
+    "secure": "nsp check",
+    "check": "npm-check -u",
+    "test-with-cover": "istanbul cover ./node_modules/.bin/_mocha",
+    "test-without-cover": "mocha",
+    "remap-coverage:dist": "node ./scripts/remapped-coverage.js --force_min_cover true --output ./coverage/typescript",
+    "remap-coverage": "node ./scripts/remapped-coverage.js --force_min_cover=false --output ./coverage/typescript",
+    "coverage": "istanbul check-coverage ./coverage/typescript/coverage.json",
+    "build": "npm-run-batch",
+    "build:dist": "run-batch",
+    "build:watch": "cross-env NODE_ENV=production run-batch",
+    "test": "run-batch",
+    "test:dist": "run-batch"
+  },
+  "run-batch": {
+    "build": [
+      "check-engines",
+      "clean",
+      "lint",
+      "compile:build",
+      "test"
+    ],
+    "build:watch": [
+      "check-engines",
+      "compile:watch"
+    ],
+    "build:dist": [
+      "check-engines",
+      "clean:dist",
+      "lint",
+      "compile:dist",
+      "test:dist"
+    ],
+    "test:dist": [
+      "check-engines",
+      "test-with-cover",
+      "remap-coverage:dist"
+    ],
+    "test": [
+      "check-engines",
+      "test-with-cover",
+      "remap-coverage"
+    ]
+  },
+  "pre-commit": [
+    "test",
+    "build:dist",
+    "staged-mods-ok"
+  ],
+  "pre-push": [
+    "coverage",
+    "check",
+    "secure",
+    "test",
+    "no-mods"
+  ],
+  "keywords": [
+    "TypeScript",
+    "starter",
+    "node",
+    "boilerplate"
+  ],
+  "author": "Shishir Ramam",
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "@types/byline": "^4.2.31",
+    "@types/chai": "^3.4.30",
+    "@types/circular-json": "^0.1.29",
+    "@types/inquirer": "0.0.32",
+    "@types/mocha": "^2.2.29",
+    "@types/node": "^7.0.5",
+    "@types/semver": "^5.3.29",
+    "blanket": "^1.2.3",
+    "chai": "^3.5.0",
+    "chalk": "^1.1.3",
+    "check-engines": "^1.2.0",
+    "circular-json": "^0.3.1",
+    "commander": "^2.9.0",
+    "cross-env": "^3.1.3",
+    "git-mods": "^1.0.0",
+    "graceful-fs": "^4.1.9",
+    "inquirer": "^3.0.5",
+    "istanbul": "^0.4.4",
+    "mocha": "^3.0.1",
+    "node-emoji": "^1.4.1",
+    "npm-check": "^5.2.3",
+    "npm-run-batch": "0.0.4",
+    "npm-sh": "^1.0.1",
+    "nsp": "^2.6.1",
+    "nsp-formatter-checkstyle": "^1.0.1",
+    "nsp-formatter-remarkup": "^1.0.2",
+    "pre-commit": "^1.1.3",
+    "pre-push": "^0.1.1",
+    "remap-istanbul": "^0.9.1",
+    "rimraf": "^2.5.4",
+    "shelljs-nodecli": "^0.1.1",
+    "tslint": "^4.0.0-dev.0",
+    "typescript": "^2.1.0-dev.20161030"
+  },
+  "dependencies": {
+    "check-engines": "^1.2.0",
+    "lodash.merge": "^4.6.0",
+    "semver": "^5.3.0"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sramam/typescript-starter-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sramam/typescript-starter-node/issues"
+  },
+  "homepage": "https://github.com/sramam/typescript-starter-node#readme"
+}
