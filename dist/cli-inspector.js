@@ -60,7 +60,7 @@ function run(cmd_line, interactions, options) {
             exit: '',
             stderr: '',
             stdout: '',
-            transcript: ''
+            transcript: []
         };
         // reconcile options with defaults and overrides.
         options = lodash_1.merge({
@@ -108,6 +108,7 @@ function run(cmd_line, interactions, options) {
                             }
                         }));
                     }
+                    cache.transcript.push(`stdin: ${data}`);
                     if (options.debug) {
                         process.stdout.write(`${data}`);
                     }
@@ -119,7 +120,6 @@ function run(cmd_line, interactions, options) {
             if (options.debug) {
                 process.stdout.write(data);
             }
-            cache.transcript += data;
             cache.stdout += data;
         }
         // can'tfigure how to get inquirer to send stderr. skip?
@@ -128,7 +128,6 @@ function run(cmd_line, interactions, options) {
             if (options.debug) {
                 process.stderr.write(data);
             }
-            cache.transcript += data;
             cache.stderr += data;
         }
         function _exit(code, signal) {
@@ -150,6 +149,9 @@ function run(cmd_line, interactions, options) {
                         // we found a match. Consume the match, and return.
                         cache.stdout = cache.stdout.replace(expected.stdout, '');
                         cache.stderr = cache.stderr.replace(expected.stderr, '');
+                        cache.transcript.push(`stdout: ${cache.stdout}`);
+                        cache.transcript.push(`stderr: ${cache.stderr}`);
+                        cache.transcript.push(`------ SUCCESS ${Date.now()}`);
                         resolve(true);
                     }
                     else {
@@ -160,10 +162,20 @@ function run(cmd_line, interactions, options) {
                             /* istanbul ignore next */
                         }
                         else if (state.exited !== null) {
+                            cache.transcript.push(`stdout: ${cache.stdout}`);
+                            cache.transcript.push(`stdout-expected: ${expected.stdout}`);
+                            cache.transcript.push(`stderr: ${cache.stderr}`);
+                            cache.transcript.push(`stderr-expected: ${expected.stderr}`);
+                            cache.transcript.push(`------ PREMATURE EXIT ${Date.now()}`);
                             reject(`Child Process exited prematurely. Expected: ${_stringify(expected)}; Actual: ${_stringify(cache)}`);
                         }
                         else {
                             // the end of time.
+                            cache.transcript.push(`stdout: ${cache.stdout}`);
+                            cache.transcript.push(`stdout-expected: ${expected.stdout}`);
+                            cache.transcript.push(`stderr: ${cache.stderr}`);
+                            cache.transcript.push(`stderr-expected: ${expected.stderr}`);
+                            cache.transcript.push(`------ TIMEOUT ${Date.now()}`);
                             reject(`Timed out. Expected: ${_stringify(expected)}; Actual: ${_stringify(cache)}`);
                         }
                     }

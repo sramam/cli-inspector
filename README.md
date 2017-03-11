@@ -21,11 +21,12 @@ A library to help test CLI. Originally intended to test [inquirer.js](https://gi
     );
 ```
 
+
 # Action
 The gif below shows a build of cli-inspector, including tests, which use cli-inspector
 to test an example inquirer.js pizza-ordering application.
 
-![animated build](./docs/npm-run-build.gif "Animated Build")
+![animated build](https://github.com/sramam/cli-inspector/blob/master/docs/npm-run-build.gif "Animated Build")
 
 # API documentation
 
@@ -159,8 +160,18 @@ This works well, but a few cautions:
 
 1. Prefer `[\s\S]*` to `.*` with regular expressions that match multi-line strings with terminal control characters.
 2. Escape all regexp special characters. There are a surprising number of them in regular CLIs. The set you should watch for: `^?[]()-{}!,*.`
-3. Understand the value of `debug` and `debugStep` provided in by `cli-inspector`. It'll allows you to speed up the iteration required to make workable interactions array.
+3. Currently, the spawned process inserts a `\n` at column 80. The spawn operation however does not expose the underying TTY or control over it. Until we find a way around, the simplest thing is to add the `[\n]?` as an optional character in the match sequence.
+4. The interactions array is a command-response sequence. Creating it can get very complicated quickly. To help, `cli-inspector` adds a `details` object to erros thrown. Specifically, `details.transcript`, which records a step-by-step pattern match, making it easier to see what is actually being seen. A sample is shown below:
 
+```typescript
+// Using err.details to get inspector state and debugging insight.
+try {
+  inspector.run(cmd_line, interactions, options);
+} catch (err) {
+  console.log(JSON.stringify(err.details, null, 2));
+  throw err;
+}
+```
 
 # Develop
 

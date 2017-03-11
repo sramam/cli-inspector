@@ -141,7 +141,7 @@ export async function run(
     exit: '',
     stderr: '',
     stdout: '',
-    transcript: ''
+    transcript: []
   };
 
   // reconcile options with defaults and overrides.
@@ -199,6 +199,7 @@ export async function run(
           }
         }));
       }
+      cache.transcript.push(`stdin: ${data}`);
       if (options.debug) {
         process.stdout.write(`${data}`);
       }
@@ -209,7 +210,6 @@ export async function run(
     if (options.debug) {
       process.stdout.write(data);
     }
-    cache.transcript += data;
     cache.stdout += data;
   }
 
@@ -219,7 +219,6 @@ export async function run(
     if (options.debug) {
       process.stderr.write(data);
     }
-    cache.transcript += data;
     cache.stderr += data;
   }
 
@@ -245,6 +244,9 @@ export async function run(
           // we found a match. Consume the match, and return.
           cache.stdout = cache.stdout.replace(expected.stdout, '');
           cache.stderr = cache.stderr.replace(expected.stderr, '');
+          cache.transcript.push(`stdout: ${cache.stdout}`);
+          cache.transcript.push(`stderr: ${cache.stderr}`);
+          cache.transcript.push(`------ SUCCESS ${Date.now()}`);
           resolve(true);
         } else {
           const now = Date.now();
@@ -253,9 +255,19 @@ export async function run(
             setTimeout(_poll, delta);
             /* istanbul ignore next */
           } else if (state.exited !== null) {
+            cache.transcript.push(`stdout: ${cache.stdout}`);
+            cache.transcript.push(`stdout-expected: ${expected.stdout}`);
+            cache.transcript.push(`stderr: ${cache.stderr}`);
+            cache.transcript.push(`stderr-expected: ${expected.stderr}`);
+            cache.transcript.push(`------ PREMATURE EXIT ${Date.now()}`);
             reject(`Child Process exited prematurely. Expected: ${_stringify(expected)}; Actual: ${_stringify(cache)}`);
           } else {
             // the end of time.
+            cache.transcript.push(`stdout: ${cache.stdout}`);
+            cache.transcript.push(`stdout-expected: ${expected.stdout}`);
+            cache.transcript.push(`stderr: ${cache.stderr}`);
+            cache.transcript.push(`stderr-expected: ${expected.stderr}`);
+            cache.transcript.push(`------ TIMEOUT ${Date.now()}`);
             reject(`Timed out. Expected: ${_stringify(expected)}; Actual: ${_stringify(cache)}`);
           }
         }
