@@ -6,4 +6,5 @@ script:
   - npm run lint
   - npm run compile:build
   - npm test
-
+  - remap-istanbul -i coverage/typescript/coverage.json -o coverage/typescript/lcov.info -t lcovonly
+  - cat coverage/typescript/lcov.info | ./node_modules/coveralls/bin/coveralls.js
