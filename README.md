@@ -1,16 +1,16 @@
 # cli-inspector
 <!-- badge -->
 [![npm license](https://img.shields.io/npm/l/cli-inspector.svg)](https://www.npmjs.com/package/cli-inspector)
-[![travis status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://travis-ci.org/sramam/cli-inspector)
-[![appveyor status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://ci.appveyor.com/project/sramam/cli-inspector)
+*nix [![travis status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://travis-ci.org/sramam/cli-inspector)
+win [![appveyor status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://ci.appveyor.com/project/sramam/cli-inspector)
 [![Coverage Status](https://coveralls.io/repos/github/sramam/cli-inspector/badge.svg?branch=master)](https://coveralls.io/github/sramam/cli-inspector?branch=master)
 <!-- endbadge -->
 
 A library to help test CLI. Originally intended to test [inquirer.js](https://github.com/SBoudrias/Inquirer.js) driven CLIs.
 
 - Should work for other CLI applications, but YMMV.
-- Only tested on MacOSX. Should work on *nix.
-- Windows reports and especially Pull-Requests much appreciated.
+- Developed on OSX, tested on *nix, windows.
+- Pull requests, DX enhancements welcomed.
 
 # Installation
 
