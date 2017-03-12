@@ -1,8 +1,8 @@
 # cli-inspector
 <!-- badge -->
 [![npm license](https://img.shields.io/npm/l/cli-inspector.svg)](https://www.npmjs.com/package/cli-inspector)
-*nix [![travis status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://travis-ci.org/sramam/cli-inspector)
-win [![appveyor status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://ci.appveyor.com/project/sramam/cli-inspector)
+[![travis status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://travis-ci.org/sramam/cli-inspector)
+[![Build status](https://ci.appveyor.com/api/projects/status/5ajjsy8wldug8deg?svg=true)](https://ci.appveyor.com/project/sramam/cli-inspector)
 [![Coverage Status](https://coveralls.io/repos/github/sramam/cli-inspector/badge.svg?branch=master)](https://coveralls.io/github/sramam/cli-inspector?branch=master)
 <!-- endbadge -->
 
