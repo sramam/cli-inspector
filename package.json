@@ -85,7 +85,6 @@
     ],
     "prepush": [
       "build:dist",
-      "check",
       "secure",
       "no-mods"
     ]
