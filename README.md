@@ -4,6 +4,10 @@
 [![travis status](https://img.shields.io/travis/sramam/cli-inspector.svg)](https://travis-ci.org/sramam/cli-inspector)
 [![Build status](https://ci.appveyor.com/api/projects/status/5ajjsy8wldug8deg?svg=true)](https://ci.appveyor.com/project/sramam/cli-inspector)
 [![Coverage Status](https://coveralls.io/repos/github/sramam/cli-inspector/badge.svg?branch=master)](https://coveralls.io/github/sramam/cli-inspector?branch=master)
+[![David](https://david-dm.org/sramam/cli-inspector/status.svg)](https://david-dm.org/sramam/cli-inspector)
+[![David](https://david-dm.org/sramam/cli-inspector/dev-status.svg)](https://david-dm.org/sramam/cli-inspector?type=dev)
+<br/>
+[![NPM](https://nodei.co/npm/cli-inspector.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cli-inspector/)
 <!-- endbadge -->
 
 A library to help test CLI. Originally intended to test [inquirer.js](https://github.com/SBoudrias/Inquirer.js) driven CLIs.
@@ -192,15 +196,15 @@ try {
 - Pipes stdin, stdout and stderr appropriately.
 
 ```
-    +---------------+
-    | cli-inspector |                     +---------------+
-    |               |       stdin         | child process |
-    |               +---------------------->              |
-    |               |       stdout        |               |
-    |              <----------------------+               |
-    |               |       stderr        |               |
-    |              <----------------------+               |
-    +---------------+                     +---------------+
++---------------+
+| cli-inspector |                     +---------------+
+|               |       stdin         | child process |
+|               +---------------------->              |
+|               |       stdout        |               |
+|              <----------------------+               |
+|               |       stderr        |               |
+|              <----------------------+               |
++---------------+                     +---------------+
 ```
 
 - Iterates over the supplied interactions,
