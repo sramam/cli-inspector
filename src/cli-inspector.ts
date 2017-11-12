@@ -249,7 +249,7 @@ export async function run(
         process.stdout.write(`${data}`);
       }
     }
-  };
+  }
 
   function _stdout(data) {
     if (options.debug) {

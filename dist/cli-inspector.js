@@ -122,7 +122,6 @@ function run(cmd_line, interactions, options) {
                 }
             });
         }
-        ;
         function _stdout(data) {
             if (options.debug) {
                 process.stdout.write(data);
