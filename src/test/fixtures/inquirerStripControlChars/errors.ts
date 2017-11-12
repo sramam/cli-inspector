@@ -3,11 +3,11 @@ import { Interaction, ENTER, UP, DOWN, CTRLC, CTRLD } from '../../..';
 export const errors = {
   timeout: {
     name: 'should timeout waiting for response on stdout',
-    error: /Timed out. Expected:[\s\S]*; Actual:[\s\S]*/,
+    error: /Timed out. Expected:; Actual:/,
     interactions: <Interaction[]>[{
-      prompt: /^[\s\S]*Is this for delivery\? \(y\/N\)/,
+      prompt: /^Is this for delivery\? \(y\/N\)/,
       input: ENTER,
-      stdout: /^[\s\S]*Is this for DELIVERY\? No/, // cause mismatch failure/timeout
+      stdout: /^Is this for DELIVERY\? No/, // cause mismatch failure/timeout
       stderr: ''
     }]
   },

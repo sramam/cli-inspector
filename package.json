@@ -1,6 +1,6 @@
 {
   "name": "cli-inspector",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Automate CLI testing with style",
   "keywords": [
     "TypeScript",

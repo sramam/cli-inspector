@@ -5,6 +5,10 @@ export declare const UP = "\u001B[A";
 export declare const DOWN = "\u001B[B";
 export declare const CTRLC = "\u0003";
 export declare const CTRLD = "\u0004";
+export interface ControlChars {
+    strip: boolean;
+    regexp?: RegExp;
+}
 export interface Options extends SpawnOptions {
     /**
      * prints all child_process stdin/stdout/stderr to process stdout/stderr
@@ -39,6 +43,18 @@ export interface Options extends SpawnOptions {
      * @default false
      */
     killOnExit?: boolean;
+    /**
+     * Crafting regular-expressions to match expressions when there are control characters
+     * in the output is quite painful. With set to true/false, decides if an internally
+     * defined regexp should be run over the input.
+     * `/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;`
+     *
+     * It is also possible to provide your own regexp for the times this is not suficient.
+     *
+     * @type {ControlChars}
+     * @default { strip: true, regexp: /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g }
+     */
+    controlChars?: ControlChars;
 }
 export interface Interaction {
     /**
@@ -80,6 +96,18 @@ export interface Interaction {
      * @default false
      */
     debugStep?: boolean;
+    /**
+     * Crafting regular-expressions to match expressions when there are control characters
+     * in the output is quite painful. With set to true/false, decides if an internally
+     * defined regexp should be run over the input.
+     * `/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;`
+     *
+     * It is also possible to provide your own regexp for the times this is not suficient.
+     *
+     * @type {ControlChars}
+     * @default { strip: true, regexp: /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g }
+     */
+    controlChars?: ControlChars;
 }
 export declare class CliInspectorError extends Error {
     details: any;

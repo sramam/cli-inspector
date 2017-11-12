@@ -17,6 +17,7 @@ exports.UP = '\x1B\x5B\x41';
 exports.DOWN = '\x1B\x5B\x42';
 exports.CTRLC = '\x03';
 exports.CTRLD = '\x04';
+const AllControlChars = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
 function _stringify(obj, replacer = null, space = 0) {
     const _replacer = (key, val) => {
         const isRegExp = (toString.call(val) === '[object RegExp]');
@@ -56,12 +57,18 @@ exports.CliInspectorError = CliInspectorError;
 function run(cmd_line, interactions, options) {
     return __awaiter(this, void 0, void 0, function* () {
         // local cache of child process output. We iteratively check and consume this.
+        const controlChars = lodash_1.merge({}, { strip: true, regexp: AllControlChars }, options.controlChars || {});
         const cache = {
             exit: '',
             stderr: '',
             stdout: '',
-            transcript: []
+            transcript: [],
+            controlChars: {
+                root: lodash_1.merge({}, controlChars),
+                step: lodash_1.merge({}, controlChars)
+            }
         };
+        delete options.controlChars;
         // reconcile options with defaults and overrides.
         options = lodash_1.merge({
             debug: false,
@@ -120,7 +127,11 @@ function run(cmd_line, interactions, options) {
             if (options.debug) {
                 process.stdout.write(data);
             }
-            cache.stdout += data;
+            const cc = cache.controlChars.step;
+            // concatenate the data with cache.stderr
+            const stdout = cache.stdout + data;
+            // if control character stripping is enabled, do it.
+            cache.stdout = cc.strip === false ? stdout : stdout.replace(cc.regexp, '');
         }
         // can'tfigure how to get inquirer to send stderr. skip?
         /* istanbul ignore next */
@@ -128,7 +139,11 @@ function run(cmd_line, interactions, options) {
             if (options.debug) {
                 process.stderr.write(data);
             }
-            cache.stderr += data;
+            const cc = cache.controlChars.step;
+            // concatenate the data with cache.stderr
+            const stderr = cache.stderr + data;
+            // if control character stripping is enabled, do it.
+            cache.stderr = cc.strip === false ? stderr : stderr.replace(cc.regexp, '');
         }
         function _exit(code, signal) {
             /* istanbul ignore next */
@@ -188,6 +203,10 @@ function run(cmd_line, interactions, options) {
             try {
                 const interaction = interactions[idx];
                 const debugStep = interaction.debugStep || false;
+                // update cacheControl settings for this step in the interaction.
+                // if not defined, use global definition
+                const cc = cache.controlChars;
+                cc.step = lodash_1.merge({}, cc.root, interaction.controlChars || {});
                 const prevDebug = options.debug;
                 options.debug = debugStep || options.debug;
                 const timeout = interaction.timeout || options.timeout;

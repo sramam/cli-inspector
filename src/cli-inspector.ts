@@ -10,6 +10,8 @@ export const DOWN = '\x1B\x5B\x42';
 export const CTRLC = '\x03';
 export const CTRLD = '\x04';
 
+const AllControlChars = /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
+
 function _stringify(obj, replacer = null, space = 0) {
   const _replacer = (key, val) => {
     const isRegExp = (toString.call(val) === '[object RegExp]');
@@ -17,6 +19,12 @@ function _stringify(obj, replacer = null, space = 0) {
   };
   return JSON.stringify(obj, _replacer, space);
 }
+
+export interface ControlChars {
+  strip: boolean;
+  regexp?: RegExp;
+}
+
 export interface Options extends SpawnOptions {
   /**
    * prints all child_process stdin/stdout/stderr to process stdout/stderr
@@ -53,6 +61,19 @@ export interface Options extends SpawnOptions {
    * @default false
    */
   killOnExit?: boolean;
+
+  /**
+   * Crafting regular-expressions to match expressions when there are control characters
+   * in the output is quite painful. With set to true/false, decides if an internally
+   * defined regexp should be run over the input.
+   * `/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;`
+   *
+   * It is also possible to provide your own regexp for the times this is not suficient.
+   *
+   * @type {ControlChars}
+   * @default { strip: true, regexp: /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g }
+   */
+  controlChars?: ControlChars;
 }
 
 export interface Interaction {
@@ -96,6 +117,19 @@ export interface Interaction {
    * @default false
    */
   debugStep?: boolean;
+
+  /**
+   * Crafting regular-expressions to match expressions when there are control characters
+   * in the output is quite painful. With set to true/false, decides if an internally
+   * defined regexp should be run over the input.
+   * `/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;`
+   *
+   * It is also possible to provide your own regexp for the times this is not suficient.
+   *
+   * @type {ControlChars}
+   * @default { strip: true, regexp: /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g }
+   */
+  controlChars?: ControlChars;
 }
 
 
@@ -137,12 +171,23 @@ export async function run(
 ) {
 
   // local cache of child process output. We iteratively check and consume this.
+  const controlChars = merge(
+    {},
+    { strip: true, regexp: AllControlChars },
+    options.controlChars || {});
+
   const cache = {
     exit: '',
     stderr: '',
     stdout: '',
-    transcript: []
+    transcript: [],
+    controlChars: {
+      root: merge({}, controlChars),
+      step: merge({}, controlChars)
+    }
   };
+
+  delete options.controlChars;
 
   // reconcile options with defaults and overrides.
   options = merge(
@@ -210,7 +255,11 @@ export async function run(
     if (options.debug) {
       process.stdout.write(data);
     }
-    cache.stdout += data;
+    const cc = cache.controlChars.step;
+    // concatenate the data with cache.stderr
+    const stdout = cache.stdout + data;
+    // if control character stripping is enabled, do it.
+    cache.stdout = cc.strip === false ? stdout : stdout.replace(cc.regexp, '');
   }
 
   // can'tfigure how to get inquirer to send stderr. skip?
@@ -219,7 +268,11 @@ export async function run(
     if (options.debug) {
       process.stderr.write(data);
     }
-    cache.stderr += data;
+    const cc = cache.controlChars.step;
+    // concatenate the data with cache.stderr
+    const stderr = cache.stderr + data;
+    // if control character stripping is enabled, do it.
+    cache.stderr = cc.strip === false ? stderr : stderr.replace(cc.regexp, '');
   }
 
   function _exit(code, signal) {
@@ -234,7 +287,11 @@ export async function run(
   }
 
   // watches the child process for stdout/stderr.
-  const childPoller = async (expected, expiry, delta = 1000): Promise<boolean> => {
+  const childPoller = async (
+    expected,
+    expiry,
+    delta = 1000
+  ): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {
       const _poll = () => {
         if (
@@ -281,6 +338,10 @@ export async function run(
     try {
       const interaction = interactions[idx];
       const debugStep = interaction.debugStep || false;
+      // update cacheControl settings for this step in the interaction.
+      // if not defined, use global definition
+      const cc = cache.controlChars;
+      cc.step = merge({}, cc.root, interaction.controlChars || {});
       const prevDebug = options.debug;
       options.debug = debugStep || options.debug;
       const timeout = interaction.timeout || options.timeout;
