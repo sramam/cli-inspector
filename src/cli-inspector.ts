@@ -167,7 +167,7 @@ export class CliInspectorError extends Error {
 export async function run(
   cmd_line: string,
   interactions: Interaction[],
-  options?: Options
+  options: Options = {}
 ) {
 
   // local cache of child process output. We iteratively check and consume this.

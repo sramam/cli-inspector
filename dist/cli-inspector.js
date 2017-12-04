@@ -54,7 +54,7 @@ exports.CliInspectorError = CliInspectorError;
  * @param {Interaction[]} interactions
  * @param {Options} [options]
  */
-function run(cmd_line, interactions, options) {
+function run(cmd_line, interactions, options = {}) {
     return __awaiter(this, void 0, void 0, function* () {
         // local cache of child process output. We iteratively check and consume this.
         const controlChars = lodash_1.merge({}, { strip: true, regexp: AllControlChars }, options.controlChars || {});
