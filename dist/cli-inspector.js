@@ -226,7 +226,7 @@ function run(cmd_line, interactions, options = {}) {
                 options.debug = prevDebug;
             }
             catch (err) {
-                options.killOnExit && child.kill('SIGHUP');
+                options.killOnExit && child.kill('SIGINT');
                 /* istanbul ignore next */
                 const code = (state.exited && state.exited.code) || null;
                 /* istanbul ignore next */
@@ -245,7 +245,7 @@ function run(cmd_line, interactions, options = {}) {
             }
         }
         // finally, we are all done with the interaction.
-        options.killOnExit && child.kill('SIGHUP');
+        options.killOnExit && child.kill('SIGINT');
     });
 }
 exports.run = run;

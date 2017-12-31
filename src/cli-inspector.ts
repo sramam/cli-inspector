@@ -369,7 +369,7 @@ export async function run(
       );
       options.debug = prevDebug;
     } catch (err) {
-      options.killOnExit && child.kill('SIGHUP');
+      options.killOnExit && child.kill('SIGINT');
       /* istanbul ignore next */
       const code = (state.exited && state.exited.code) || null;
       /* istanbul ignore next */
@@ -388,5 +388,5 @@ export async function run(
     }
   }
   // finally, we are all done with the interaction.
-  options.killOnExit && child.kill('SIGHUP');
+  options.killOnExit && child.kill('SIGINT');
 }
