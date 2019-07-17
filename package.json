@@ -123,7 +123,7 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "lodash.merge": "^4.6.0",
+    "lodash.merge": "^4.6.2",
     "runtime-engine-check": "^1.0.0",
     "semver": "^5.4.1"
   },
