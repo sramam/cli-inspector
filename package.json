@@ -125,7 +125,7 @@
   "dependencies": {
     "lodash.merge": "^4.6.0",
     "runtime-engine-check": "^1.0.0",
-    "semver": "^5.4.1"
+    "semver": "^7.5.2"
   },
   "standard": {
     "env": [
